@@ -1,0 +1,3 @@
+---
+- include: easy_rsa.yml
+- include: openvpn.yml

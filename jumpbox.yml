@@ -1,0 +1,6 @@
+---
+- hosts: jumpbox
+  become: yes
+  roles:
+      - vpn_with_ca
+      - jumpbox
