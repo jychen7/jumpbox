@@ -1,19 +1,25 @@
 ---
-- name: Install OpenVPN and iptables-persistent package
-  apt: name={{ item }} state=latest
+- name: Install OpenVPN  package
+  package: name={{ item }} state=latest
   notify: openvpn restart
-  with_items: 
-      - openvpn
-      - iptables-persistent
+  with_items:
+      - "{{ openvpn_package_name }}"
 
 - name: Enable IP Forward
   sysctl: name=net.ipv4.ip_forward value=1 state=present reload=yes
 
-- name: Copy templates
+- name: Copy universal templates
   template: src={{ item.src }} dest={{ item.dest }} owner=root group=root mode={{ item.mode }}
+  notify: openvpn restart
   with_items:
       - { src: 'etc_openvpn_server.conf.j2', dest: '/etc/openvpn/server.conf', mode: '0600' }
-      - { src: 'etc_iptables_rules.v4.j2', dest: '/etc/iptables/rules.v4', mode: '0644' }
-  notify: 
-      - openvpn restart
-      - reload iptables rules
+
+- include: redhat_firewall.yml
+  when: ansible_os_family == "RedHat"
+
+- include: debian_firewall.yml
+  when: ansible_os_family == "Debian"
+
+- name: Enable OpenVPN service
+  service: name=openvpn@server.service enabled=yes
+  when: ansible_os_family == "RedHat"

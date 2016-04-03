@@ -9,7 +9,7 @@ cert /etc/openvpn/easy-rsa/keys/{{ ansible_hostname }}.crt
 key /etc/openvpn/easy-rsa/keys/{{ ansible_hostname }}.key  # This file should be kept secret
 
 user nobody
-group nogroup
+group {{ openvpn_group }}
 
 # Diffie hellman parameters.
 # Generate your own with:

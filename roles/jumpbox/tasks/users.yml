@@ -5,6 +5,6 @@
       uid: "{{ item.uid }}"
       groups: "{{ item.groups }}"
       append: yes
-      createhome: no
+      createhome: yes
       state: present
   with_items: "{{unixusers}}"

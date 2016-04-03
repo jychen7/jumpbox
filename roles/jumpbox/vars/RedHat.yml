@@ -1,0 +1,8 @@
+unixgroups: 
+    - { name: 'users', gid: '100' }
+    - { name: 'allusers', gid: '120' }
+    - { name: 'othergroup', gid: '121' }
+
+unixusers:
+    - { name: 'bossuser', uid: '1001', groups: "users,allusers,othergroup,wheel" }
+    - { name: 'user1', uid: '1003', groups: "allusers,othergroup" }

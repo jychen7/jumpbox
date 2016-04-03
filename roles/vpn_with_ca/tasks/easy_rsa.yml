@@ -1,6 +1,6 @@
 ---
 - name: Install easy-rsa package
-  apt: name=easy-rsa state=latest
+  package: name=easy-rsa state=latest
 
 - name: Create /etc/openvpn/easy-rsa/keys directory
   file: path=/etc/openvpn/easy-rsa/keys state=directory
