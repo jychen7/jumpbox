@@ -2,7 +2,7 @@
 
 ## Overview
 
-This set of playbooks will turn a general Ubuntu LTS (14.04) host into a jump box. This is a box that acts as an SSH gateway for users to your network, and also provides an OpenVPN server (with CA) to allow non-SSH access. 
+This set of playbooks will turn a general Ubuntu LTS (14.04) or Centos 7 (and possibly RHEL 7) host into a jump box. This is a box that acts as an SSH gateway for users to your network, and also provides an OpenVPN server (with CA) to allow non-SSH access. 
 
 As a general rule, you should *not* run any other unneeded services on a host like this, and you should use something more secure than passwords for authentication.
 
@@ -18,7 +18,7 @@ The firewall component is currently part of the vpn_with_ca role, but may be spl
 ---
 
 ## Requirements
-The Ansible controller should be running the latest version from https://github.com/ansible/ansible and the target must be an Ubuntu 14.04 LTS host. If there is any interest, I'll modify this to work with Centos 7 as well.
+The Ansible controller should be running the latest version from https://github.com/ansible/ansible and the target must be an Ubuntu 14.04 LTS or Centos 7 host. RedHat Enterprise Linux 7 will be tested in the coming weeks.
 
 You should also have one existing user who is able to ssh to the host using a key to authenticate, and be able to sudo to root. This role will disable login for root over SSH and also disable password logins unless you make some changes.
 
@@ -54,14 +54,17 @@ You can then provide whichever of these files is needed for your OpenVPN client 
 
 ## Variable files and templates 
 ### jumbox
-#### variables - roles/jumpbox/vars/main.yml
+#### variables - roles/jumpbox/vars/default.yml
 There are two sections here - unixgroups and unixusers. These are each a list of dictionaries of values that will be used when creating these users and groups.
 
 The idea here is that instead of manually creating users on the box in the future, you simply rerun the playbook. This will create any new users, and you'll have consistent uid and gids for each object.
 
+#### variables - roles/jumpbox/vars/RedHat.yml
+This vars file will be used if the target ansible_os_family is RedHat. The main difference is that the wheel group is used instead of sudo for admin users.
+
 #### templates - roles/jumpbox/templates
-##### etc_ssh_sshd_config.j2
-This is the SSH server config that will be deployed to the jump box. It's close to the Ubuntu default, with the following changes:
+##### etc_ssh_sshd_config.Debian.j2 
+This is the SSH server config that will be deployed to the jump box if you're running Ubuntu. It's close to the Ubuntu default, with the following changes:
    * PermitRootLogin no
    * PasswordAuthentication no
    * LoginGraceTime 30
@@ -69,9 +72,17 @@ This is the SSH server config that will be deployed to the jump box. It's close 
    
 If you still want root ssh access via key after running this playbook, change 'PermitRootLogin no' to 'PermitRootLogin without-password'
 
+##### etc_ssh_sshd_config.RedHat.j2 
+This template does the same as the above one, but for RedHat / Centos systems. All other statements above apply to this as well.
+
 ### vpn_with_ca
 #### variables - roles/vpn_with_ca/vars/main.yml
 Here, you'll define your VPN network (not your private network - the network range to be used by OpenVPN) and your key details that will be used for both the OpenVPN server and also individual device or user vpn keys. 
+
+#### variables - roles/vpn_with_ca/vars/default.yml , Debian.yml and RedHat.yml
+Package and service names may differ between Ubuntu and RedHat. The default.yml should work for Ubuntu, but RedHat.yml is used for Centos and RedHat systems. The key differences here are
+    * OpenVPN service name is openvpn@server.service instead of just openvpn
+	* Group to run as is nobody instead of nogroup on Ubuntu
 
 #### templates - roles/vpn_with_ca/templates
 ##### etc_openvpn_server.conf.j2
@@ -93,8 +104,3 @@ We'll be using the iptables-persistent package to load and save rules. This temp
 Last, but not least, we have the template used to create ovpn files once the vpn is deployed. This will not be copied to the server, but instead used each time you use the `create_vpn_key.yml` playbook. 
 
 There is one change that is likely to be needed here, and that's the `remote` line. This should be changed to something that clients can reach from outside your network. 
-
-
-
-
-
