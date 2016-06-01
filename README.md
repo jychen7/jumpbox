@@ -53,7 +53,7 @@ You can then provide whichever of these files is needed for your OpenVPN client 
 ---
 
 ## Variable files and templates 
-### jumbox
+### jumpbox
 #### variables - roles/jumpbox/vars/default.yml
 There are two sections here - unixgroups and unixusers. These are each a list of dictionaries of values that will be used when creating these users and groups.
 
