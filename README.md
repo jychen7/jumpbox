@@ -25,7 +25,7 @@ You should also have one existing user who is able to ssh to the host using a ke
 ---
 
 ## Basic Usage
-This assumes that all variables and templates are already exactly as you would like them. **This is not likely to be true!** For more information about customization and options availalble, *please* read the rest of ths README. 
+This assumes that all variables and templates are already exactly as you would like them. **This is not likely to be true!** For more information about customization and options available, *please* read the rest of ths README. 
 
 #### Host to deploy to 
 You need to either edit your ansible inventory and create a new group named `jumpbox` that includes all hosts that you want to run this against *or* you need to edit `jumpbox.yml` and change the `jumpbox` in the hosts line to the name of the host that you wish to use.
