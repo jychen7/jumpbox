@@ -50,6 +50,12 @@ Once you've run this, you'll find the device key, certificate, csr and ovpn conf
 
 You can then provide whichever of these files is needed for your OpenVPN client application to your users.
 
+##### Client entry for iOS vs Tunnelblick
+In a generated .ovpn file, you'll note that the first line is `tls-client`. This works out of the box for iOS clients, but does not work with [Tunnelblick](https://tunnelblick.net/).
+
+If you want to use a .ovpn file with Tunnelblick, please change `tls-client` to `client` before adding the VPN connection.
+
+
 ---
 
 ## Variable files and templates 
