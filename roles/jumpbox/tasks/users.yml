@@ -2,7 +2,6 @@
 - name: Add users
   user: 
       name: "{{ item.name }}"
-      uid: "{{ item.uid }}"
       groups: "{{ item.groups }}"
       append: yes
       createhome: yes

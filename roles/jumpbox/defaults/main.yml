@@ -1,0 +1,10 @@
+unixgroups: 
+  - { name: 'users' }
+  - { name: 'allusers' }
+  - { name: 'othergroup' }
+
+unixusers:
+  - { name: 'bossuser', groups: "users,allusers,othergroup,sudo" }
+  - { name: 'user1', groups: "allusers,othergroup" }
+
+ssh_port: 22
